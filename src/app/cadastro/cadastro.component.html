@@ -1,0 +1,24 @@
+<h3>Cadastro</h3>
+<form [formGroup]="cadastroForm" (ngSubmit)="onSubmit()">
+    <div>
+        <label>Nome</label>
+        <input type="text" id="nome" formControlName="nome"/>
+
+    </div>
+
+    <div>
+        <label>Email</label>
+        <input type="email" id="email" formControlName="email" />
+
+    </div>
+
+    <div>
+        <label>Senha</label>
+        <input type="password" id="senha" formControlName="senha"/>
+
+    </div>
+
+
+    <button class = "button" type="submit">Criar Usuário</button>
+
+</form>
