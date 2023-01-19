@@ -8,7 +8,7 @@ import {
   atualizaUser,
   removeUser,
   buscaUserPorNome,
-  atualizaPermissao
+  buscaUserPorEmail
 } from "./middleware/users.js";
 import mongoose from "mongoose";
 
@@ -50,6 +50,8 @@ app.put("/usuarios/:id", validaHeader, atualizaUser);
 app.delete("/usuarios/:id", validaHeader, removeUser);
 
 app.get("/busca", validaHeader, buscaUserPorNome);
+
+app.get("/buscaemail", validaHeader, buscaUserPorEmail);
 
 app.post("/login", login);
 

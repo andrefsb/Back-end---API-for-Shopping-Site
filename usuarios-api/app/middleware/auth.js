@@ -106,7 +106,7 @@ export const valida = (req, res) => {
 
     User.findOne({ _id: ObjectId(decoded.id)}).exec
     ((err, user) => {
-      console.log(user);
+      // console.log(user);
       res.status(200).send(user);
     });
 

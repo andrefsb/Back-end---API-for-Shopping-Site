@@ -5,13 +5,13 @@ export const listUsuarios = (req, res) => {
   User.find({}, "_id nome email admin").exec((err, users) => {
     res.status(200).send(users);
   });
-  console.log('Enviados usuarios');
+  // console.log('Enviados usuarios');
 };
 
 export const retornaUser = (req, res) => {
   User.findOne({ _id: ObjectId(req.params.id) }, "_id nome email admin").exec(
     (err, user) => {
-      console.log(user);
+      // console.log(user);
       res.status(200).send(user);
     }
   );
@@ -28,6 +28,7 @@ export const atualizaUser = (req, res) => {
 
 export const removeUser = (req, res) => {
   User.remove({ _id: ObjectId(req.params.id) }).exec((err, user) => {
+    console.log('Removido:',user);
     res.status(200).send(user);
   });
 };
@@ -47,4 +48,16 @@ export const atualizaPermissao = (req, res) => {
   ).exec((err, user) => {
     res.status(200).send(user);
   });
+};
+
+export const buscaUserPorEmail = (req, res) => {
+  User.find({
+    email: {
+      $regex: req.query.email
+    }
+  }, "_id nome email admin").exec(
+    (err, users) => {
+      res.status(200).send(users);
+    }
+  );
 };
