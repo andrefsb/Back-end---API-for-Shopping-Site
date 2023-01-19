@@ -67,7 +67,7 @@ export const validaHeader = (req, res, next) => {
   let token = req.get('X-token');
 
   if (!token) {
-    return res.status(403).send({ message: "Você nao me engana de novo." });
+    return res.status(403).send({ message: "Acesso Negado." });
   }
 
       jwt.verify(token, config.SECRET, (err, decoded) => {
@@ -80,10 +80,6 @@ export const validaHeader = (req, res, next) => {
 
         User.findById({ _id: ObjectId(decoded.id)}).exec((err, user) => {
           console.log(req.url);
-          
-          if (req.url.includes("usuarios") && !user.admin) {
-            return res.status(403).send({ message: "Acesso negado." });
-          }
           
           res.header("x-roles", user.admin);
           next();
