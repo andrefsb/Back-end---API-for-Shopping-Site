@@ -3,28 +3,45 @@ import User from "../model/user.js";
 import jwt from "jsonwebtoken";
 import config from "../config/index.js";
 import Token from "../model/token.js";
-import { ObjectId } from "bson";
+import {
+  ObjectId
+} from "bson";
+
+
 
 export const signup = (req, res) => {
-  const user = new User({
-    email: req.body.email,
-    nome: req.body.nome,
-    senha: bcrypt.hashSync(req.body.senha),
-    admin: req.body.admin
-  });
 
-  user.save((err, user) => {
-    if (err) {
-      res.status(500).send({
-        message: err
+  User.findOne({
+    email: req.body.email,
+  }).exec((err, user) => {
+
+    if (user) {
+      res.status(401).send({
+        message: "E-mail já cadastrado!"
       });
       return;
     }
-    console.log(user);
-    res.status(201).send({
-      message: "Criado com sucesso!"
+
+    const userAdd = new User({
+      email: req.body.email,
+      nome: req.body.nome,
+      senha: bcrypt.hashSync(req.body.senha),
+      admin: req.body.admin
     });
-    return;
+
+    userAdd.save((err, user) => {
+      if (err) {
+        res.status(500).send({
+          message: err
+        });
+        return;
+      }
+      console.log(user);
+      res.status(201).send({
+        message: "Criado com sucesso!"
+      });
+      return;
+    });
   });
 };
 
@@ -67,24 +84,30 @@ export const validaHeader = (req, res, next) => {
   let token = req.get('X-token');
 
   if (!token) {
-    return res.status(403).send({ message: "Acesso Negado." });
+    return res.status(403).send({
+      message: "Acesso Negado."
+    });
   }
 
-      jwt.verify(token, config.SECRET, (err, decoded) => {
-        console.log(decoded);
+  jwt.verify(token, config.SECRET, (err, decoded) => {
+    console.log(decoded);
 
-        if (err) {
-          console.log("Erro ao validar token!!", err);
-          return res.status(401).send({ message: "Acesso negado!" });
-        }
-
-        User.findById({ _id: ObjectId(decoded.id)}).exec((err, user) => {
-          console.log(req.url);
-          
-          res.header("x-roles", user.admin);
-          next();
-        });
+    if (err) {
+      console.log("Erro ao validar token!!", err);
+      return res.status(401).send({
+        message: "Acesso negado!"
       });
+    }
+
+    User.findById({
+      _id: ObjectId(decoded.id)
+    }).exec((err, user) => {
+      console.log(req.url);
+
+      res.header("x-roles", user.admin);
+      next();
+    });
+  });
 
 };
 
@@ -104,8 +127,9 @@ export const valida = (req, res) => {
       });
     }
 
-    User.findOne({ _id: ObjectId(decoded.id)}).exec
-    ((err, user) => {
+    User.findOne({
+      _id: ObjectId(decoded.id)
+    }).exec((err, user) => {
       // console.log(user);
       res.status(200).send(user);
     });
@@ -122,10 +146,14 @@ export const logout = (req, res) => {
 
   tokenDb.save((err, token) => {
     if (err) {
-      res.status(500).send({ message: err });
+      res.status(500).send({
+        message: err
+      });
       return;
     }
-    res.status(200).send({ message: "Logout realizado com sucesso!" });
+    res.status(200).send({
+      message: "Logout realizado com sucesso!"
+    });
     return;
   });
 }
